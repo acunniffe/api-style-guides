@@ -8,6 +8,13 @@ const config: DocsThemeConfig = {
     light: 232,
     dark: 197,
   },
+  head: (
+    <>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta property="og:title" content="API Style Guides" />
+      <meta property="og:description" content="Build your OpenAPI style guide" />
+    </>
+  ),
   darkMode: true,
   project: {
     link: 'https://github.com/acunniffe/api-style-guides',
