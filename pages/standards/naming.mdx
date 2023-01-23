@@ -1,0 +1,47 @@
+import Naming, { CasingOptionsSelect } from '../../standards/naming';
+import { Toggle, AlwaysAdded, TextInput, SelectInput } from '../../components';
+
+# Consistent Naming
+
+When the names in your API have inconsistent casing (ie some properties are `camelCase` and some are `PascalCase`) it makes it much harder for developers to read the API documentation and responses. Constantly having to switch the mental parsers they use when reading the names is your APIs brings a lot of cognitive load. Even if your API is great in every other regard, inconsistent naming will leave developers thinking your API is hard to use. Adding a naming standard is a very high-impact standard that is easy to adopt.
+
+<Toggle name="Enforce Consistent Naming" standard={Naming} />
+
+### Supported Cases
+
+- `param-case`
+- `Capital-Param-Case`
+- `camelCase`
+- `snake_case`
+- `PascalCase`
+
+
+#### Headers
+Most APIs use `Capital-Param-Case` and `param-case` headers:
+<SelectInput name="Request Headers" attribute="requestHeaders" standard={Naming} options={CasingOptionsSelect} />
+<SelectInput name="Response Headers" attribute="responseHeaders" standard={Naming} options={CasingOptionsSelect} />
+
+
+### Request and Response Body Properties
+
+Because body properties become symbols in the consuming code, most teams stick to `camelCase`, `PascalCase` or `snake_case`:
+<SelectInput name="Properties" attribute="properties" standard={Naming} options={CasingOptionsSelect} />
+
+
+### Query Parameters
+Because query parameters are in the URL, most teams use lower case names for query parameters. This usually means `snake_case` or `param-case`:
+<SelectInput name="Query Parameters" attribute="queryParameters" standard={Naming} options={CasingOptionsSelect} />
+
+### Cookies Parameters
+Because cookies are sent as headers, most teams try to make the two consistent with `Capital-Param-Case` or `param-case`.
+<SelectInput name="Request Headers" attribute="requestHeaders" standard={Naming} options={CasingOptionsSelect} />
+
+---
+
+### Applying naming rules to existing APIs
+
+If you already have an API, it is likely that there are a few instances where your new casing rules will not have been followed. You don't want to start failing team's CI, and you definitely do not want teams to ship breaking changes to meet the new style guide.
+
+You can apply these rules to `additions` only -- that is only to new operations, properties, parameters, etc. That way your legacy API can continue working as it was designed, and you will not get 100s of errors that obscure more important issues:
+
+<AlwaysAdded attribute="applies" standard={Naming} part="parts of the API" />

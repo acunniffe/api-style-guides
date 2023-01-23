@@ -1,0 +1,518 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`can create a spectral yml patch 1`] = `
+Object {
+  "aliases": Object {
+    "Request_Parameter_Path": Object {
+      "description": "",
+      "targets": Array [
+        Object {
+          "formats": Array [
+            "oas3",
+          ],
+          "given": Array [
+            "$.paths[*].parameters[?(@.in == 'path')].name",
+            "$.paths[*][*].parameters[?(@.in == 'path')].name",
+            "$.components.parameters[?(@.in == 'path')].name",
+          ],
+        },
+        Object {
+          "formats": Array [
+            "oas2",
+          ],
+          "given": Array [
+            "$.paths[*].parameters[?(@.in == 'path')].name",
+            "$.paths[*][*].parameters[?(@.in == 'path')].name",
+            "$.components.parameters[?(@.in == 'path')].name",
+          ],
+        },
+      ],
+    },
+    "Request_Parameter_Query": Object {
+      "description": "",
+      "targets": Array [
+        Object {
+          "formats": Array [
+            "oas3",
+          ],
+          "given": Array [
+            "$.paths[*].parameters[?(@.in == 'query')].name",
+            "$.paths[*][*].parameters[?(@.in == 'query')].name",
+            "$.components.parameters[?(@.in == 'query')].name",
+          ],
+        },
+        Object {
+          "formats": Array [
+            "oas2",
+          ],
+          "given": Array [
+            "$.paths[*].parameters[?(@.in == 'query')].name",
+            "$.paths[*][*].parameters[?(@.in == 'query')].name",
+            "$.components.parameters[?(@.in == 'query')].name",
+          ],
+        },
+      ],
+    },
+  },
+  "formats": Array [
+    "oas2",
+    "oas3",
+    "oas3.0",
+    "oas3.1",
+  ],
+  "functionsDir": "functions",
+  "rules": Object {
+    "path-casing": Object {
+      "description": "Paths must be \`kebab-case\`, with hyphens separating words.
+
+**Invalid Example**
+
+\`userInfo\` must be separated with a hyphen.
+
+\`\`\`json
+{
+    \\"/userInfo\\": {
+        \\"post: }
+       ....
+}
+\`\`\` 
+
+**Valid Example**
+
+\`\`\`json
+{
+    \\"/user-info\\": {
+       \\"post: }
+       ....
+}
+\`\`\`",
+      "given": Array [
+        "$.paths",
+      ],
+      "message": "Paths must be kebab-case",
+      "severity": "error",
+      "then": Object {
+        "field": "@key",
+        "function": "pattern",
+        "functionOptions": Object {
+          "match": "^\\\\/([a-z0-9]+(-[a-z0-9]+)*)?(\\\\/[a-z0-9]+(-[a-z0-9]+)*|\\\\/{.+})*$",
+        },
+      },
+    },
+    "path-parameters-on-path-only": Object {
+      "description": "Path parameters should be defined on the path level instead of the operation level.
+
+**Invalid Example**
+
+The \`user_id\` path parameter on line 8 should not be included with the \`patch' operation.
+
+\`\`\`json lineNumbers
+{      
+  \\"patch\\": {
+      \\"parameters\\": [
+        {
+          \\"schema\\": {
+          \\"type\\": \\"integer\\"
+         },
+        \\"name\\": \\"user_id\\",
+        \\"in\\": \\"path\\"
+      }
+    ]
+  }
+}
+\`\`\`
+
+**Valid Example**
+
+The \`user-id\` path parameter is correctly located at the path level.
+
+\`\`\`json lineNumbers
+
+{  
+    \\"paths\\": {
+       \\"/users/{userId}\\": {
+         \\"parameters\\": [
+           {
+             \\"schema\\": {
+               \\"type\\": \\"integer\\"
+           },
+             \\"name\\": \\"user_id\\",
+             \\"in\\": \\"path\\"
+           }
+       ]
+     }
+   }
+ }
+\`\`\`",
+      "given": Array [
+        "$.paths[*][*].parameters[?(@.in == 'path')]",
+      ],
+      "message": "Path parameters should be defined on the path level instead of the operation level.",
+      "severity": "warn",
+      "then": Object {
+        "function": "falsy",
+      },
+    },
+    "path-parameters-snake-case": Object {
+      "description": "Path parameters must be \`snake_case\`, with each word separated by an underscore character and the first letter of each word lowercase. Also, the path parameter must not contain digits.
+
+**Invalid Example**
+
+The \`name\` property on line 9 (\`userId\`) must be separated by an underscore character and the \`I\` must be lowercase.
+
+\`\`\`json lineNumbers
+{
+    \\"paths\\": {
+      \\"/users/{userId}\\": {
+        \\"parameters\\": [
+          {
+            \\"schema\\": {
+              \\"type\\": \\"integer\\"
+            },
+            \\"name\\": \\"userId\\",
+            \\"in\\": \\"path\\"
+          }
+        ]
+      }
+    }
+  }
+\`\`\`
+
+**Valid Example**
+
+\`\`\`json lineNumbers
+{
+    \\"paths\\": {
+      \\"/users/{userId}\\": {
+        \\"parameters\\": [
+          {
+            \\"schema\\": {
+              \\"type\\": \\"integer\\"
+            },
+            \\"name\\": \\"user_id\\",
+            \\"in\\": \\"path\\"
+          }
+        ]
+      }
+    }
+  }
+\`\`\`",
+      "given": Array [
+        "#Request_Parameter_Path",
+      ],
+      "message": "Path parameters must be snake_case and must not contain digits",
+      "severity": "error",
+      "then": Object {
+        "field": "name",
+        "function": "casing",
+        "functionOptions": Object {
+          "disallowDigits": true,
+          "type": "snake",
+        },
+      },
+    },
+    "paths-avoid-special-characters": Object {
+      "description": "Paths should not contain special characters, such as \`$\` \`&\` \`+\` \`,\` \`;\` \`=\` \`?\` and \`@%\`.
+
+**Invalid Example**
+
+The path contains an ampersand. 
+
+\`\`\`json
+{
+    \\"/user&info\\": {
+       \\"post: }
+       ....
+}
+\`\`\` 
+
+**Valid Example**
+
+\`\`\`json
+{
+    \\"/user\\": {
+       \\"post: }
+       ....
+}
+\`\`\`",
+      "given": Array [
+        "$.paths",
+      ],
+      "message": "Avoid using special characters in paths",
+      "severity": "warn",
+      "then": Object {
+        "field": "@key",
+        "function": "pattern",
+        "functionOptions": Object {
+          "match": "",
+          "notMatch": "^(.*)([\\\\$&+,;=?@%]+)(.*)$",
+        },
+      },
+    },
+    "paths-no-file-extensions": Object {
+      "description": "Paths must not include \`json\` or \`xml\` file extensions.
+
+**Invalid Example**
+
+The path contains a \`.json\` extension. 
+
+\`\`\`json
+{
+    \\"/user.json\\": {
+       \\"post: }
+       ....
+}
+\`\`\` 
+
+**Valid Example**
+
+\`\`\`json
+{
+    \\"/user\\": {
+       \\"post: }
+       ....
+}
+\`\`\`",
+      "given": Array [
+        "$.paths",
+      ],
+      "message": "Paths must not have file extensions",
+      "severity": "error",
+      "then": Object {
+        "field": "@key",
+        "function": "pattern",
+        "functionOptions": Object {
+          "notMatch": "\\\\b(JSON|json|XML|xml)\\\\b",
+        },
+      },
+    },
+    "paths-no-http-verbs": Object {
+      "description": "Verbs such as \`get\`, \`delete\`, and \`put\` must not be included in paths because this information is conveyed by the HTTP method.
+
+**Invalid Example**
+
+The path contains the verb \`get\`. 
+
+\`\`\`json
+{
+    \\"/getUsers\\": {
+       \\"post: }
+       ....
+}
+\`\`\` 
+
+**Valid Example**
+
+\`\`\`json
+{
+    \\"/user\\": {
+       \\"post: }
+       ....
+}
+\`\`\`",
+      "given": Array [
+        "$.paths",
+      ],
+      "message": "Paths must not have HTTP verbs in them",
+      "severity": "error",
+      "then": Object {
+        "field": "@key",
+        "function": "pattern",
+        "functionOptions": Object {
+          "notMatch": "\\\\b(GET|PUT|POST|DELETE|LIST|CREATE|REMOVE|get|put|post|delete|list|create|remove|Get|Put|Post|Delete|List|Create|Remove)\\\\b",
+        },
+      },
+    },
+    "paths-no-query-params": Object {
+      "description": "Paths should not have query parameters in them. They should be defined separately in the OpenAPI.
+
+**Invalid Example**
+
+\`\`\`json
+{
+ \\"/users/{?id}\\": {
+
+\`\`\`
+
+**Valid Example**
+
+\`\`\`json lineNumbers
+{
+    \\"parameters\\": [
+        {
+            \\"schema\\": {
+                \\"type\\": \\"string\\"
+            },
+            \\"name\\": \\"id\\",
+            \\"in\\": \\"path\\",
+            \\"required\\": true,
+            \\"description\\": \\"User's ID\\"
+        }
+    ]
+}
+
+\`\`\`",
+      "given": Array [
+        "$.paths",
+      ],
+      "message": "Paths should not have query parameters in them. They should be defined separately in the OpenAPI.",
+      "severity": "warn",
+      "then": Object {
+        "field": "@key",
+        "function": "pattern",
+        "functionOptions": Object {
+          "notMatch": "\\\\?",
+        },
+      },
+    },
+    "paths-no-trailing-slash": Object {
+      "description": "Paths must not end with a trailing slash. 
+
+\`/users\` and \`/users/\` are separate paths. It's considered bad practice for them to differ based only on a trailing slash. It's usually preferred to not have a trailing slash.
+
+**Invalid Example**
+
+The \`users\` path ends with a slash. 
+
+\`\`\`json
+{
+    \\"/users/\\": {
+       \\"post: }
+       ....
+}
+\`\`\` 
+
+**Valid Example**
+
+\`\`\`json
+{
+    \\"/user\\": {
+       \\"post: }
+       ....
+}
+\`\`\`",
+      "given": Array [
+        "$.paths",
+      ],
+      "message": "Paths must not end with a trailing slash",
+      "severity": "error",
+      "then": Object {
+        "field": "@key",
+        "function": "pattern",
+        "functionOptions": Object {
+          "notMatch": "\\\\/$",
+        },
+      },
+    },
+    "query-parameters-snake-case": Object {
+      "description": "Query parameters must be \`snake_case\`, with each word separated by an underscore character and the first letter of each word lowercase. Also, the query parameter must not contain digits.
+
+**Invalid Example**
+
+The \`name\` property on line 8 (\`user-Id\`) must be separated by an underscore character and the \`I\` must be lowercase.
+
+\`\`\`json lineNumbers
+{
+   \\"parameters\\": [
+     {
+       \\"schema\\": {
+         \\"type\\": \\"string\\"
+       },
+       \\"in\\": \\"query\\",
+       \\"name\\": \\"user-Id\\"
+     }
+   ]
+}
+\`\`\`
+
+**Valid Example**
+
+\`\`\`json lineNumbers
+{
+    \\"parameters\\": [
+      {
+        \\"schema\\": {
+          \\"type\\": \\"string\\"
+        },
+        \\"in\\": \\"query\\",
+        \\"name\\": \\"user_id\\"
+      }
+    ]
+ }
+\`\`\`",
+      "given": Array [
+        "#Request_Parameter_Query",
+      ],
+      "message": "Query parameters should be snake_case and not contain digits",
+      "severity": "error",
+      "then": Object {
+        "function": "casing",
+        "functionOptions": Object {
+          "disallowDigits": true,
+          "type": "snake",
+        },
+      },
+    },
+    "server-has-api": Object {
+      "description": "Server must have /api",
+      "formats": Array [
+        "oas3",
+      ],
+      "given": Array [
+        "$.servers[*].url",
+      ],
+      "message": "Server must have /api in it",
+      "severity": "info",
+      "then": Object {
+        "function": "pattern",
+        "functionOptions": Object {
+          "match": "^.*\\\\/api/?.*",
+        },
+      },
+    },
+    "server-lowercase": Object {
+      "description": "Server URLs must be lowercase. This standard helps meet industry best practices.
+
+**Invalid Example**
+
+The \`name\` property on line 8 (\`user-Id\`) must be separated by an underscore character and the \`I\` must be lowercase.
+
+\`\`\`json
+{
+    \\"servers\\": [
+      {
+        \\"url\\": \\"https://ACME.com/api\\"
+      }
+    ]
+}
+\`\`\`
+
+**Valid Example**
+
+\`\`\`json
+{
+    \\"servers\\": [
+      {
+        \\"url\\": \\"https://acme.com/api\\"
+      }
+    ]
+}
+\`\`\`",
+      "formats": Array [
+        "oas3",
+      ],
+      "given": Array [
+        "$.servers[*].url",
+      ],
+      "message": "Server URL must be lowercase",
+      "severity": "error",
+      "then": Object {
+        "function": "pattern",
+        "functionOptions": Object {
+          "match": "^[^A-Z]*$",
+        },
+      },
+    },
+  },
+}
+`;

@@ -1,0 +1,87 @@
+import {useSSG} from 'nextra/ssg';
+import {generate} from '../standards/lib/generate'; import { getCookie } from 'cookies-next'; import {
+  localStorageKey
+} from '../constants';
+import { Tab, Tabs } from 'nextra-theme-docs'
+import { CopyButton } from '../components/download-button';
+
+
+export const getServerSideProps = async ({ req, res }) => {
+
+  const cookieValue = getCookie(localStorageKey, { req, res });
+
+  const config = (cookieValue) ? JSON.parse(cookieValue) : {}
+
+  const host = 'https://'+req.headers.host
+
+  const results = await generate(config, host)
+
+  return {
+    props: {
+      ssg: {
+        generated: results
+      }
+    }
+  }
+}
+
+
+
+
+export const OpticYml = () => {
+  return <div>
+  <pre style={{padding: 9}}>
+    <div style={{borderBottom: '1px solid #e2e2e2', paddingBottom: 5, fontSize: 12, fontWeight: 200, marginBottom: 10, color: '#413939'}}>optic.dev.yml</div>
+    {useSSG().generated.opticYamlContents}
+  </pre>
+    <CopyButton text="Copy optic.dev.yml" content={useSSG().generated.opticYamlContents} />
+  </div>
+
+}
+export const SpectralYaml = () => {
+  const { generated } = useSSG()
+
+  const yaml = generated.spectralYamlContents
+
+  const notSpectralCompatible = !generated.compatibility.spectral
+
+  return <div>
+  {notSpectralCompatible && <div style={{color: 'red', fontWeight: 600, marginBottom: 10}}>⚠️ Running rules on 'Added' and breaking change checks omitted from this Spectral config. Those options are only supported when running with Optic</div>}
+  <pre style={{padding: 9}}>
+    <div style={{borderBottom: '1px solid #e2e2e2', paddingBottom: 5, fontSize: 12, fontWeight: 200, marginBottom: 10, color: '#413939'}}>.spectral.yml</div>
+    {yaml}
+  </pre>
+    <CopyButton text="Copy .spectral.yml" content={yaml} />
+  </div>
+}
+
+
+
+<Tabs items={['optic', 'spectral']}>
+  <Tab>
+
+    ```bash
+    npm install -g @useoptic/optic @stoplight/spectral
+    ```
+    <OpticYml />
+
+    Create an `optic.dev.yml` file in your repo root. [Then run the `diff` command](https://www.useoptic.com/docs/diff-openapi) with the `--check` flag:
+    ```bash
+    optic diff openapi.yml --base main --check
+    ```
+    > where `main` is your default Git branch
+
+  </Tab>
+  <Tab>
+    ```bash
+    npm install -g @stoplight/spectral
+    ```
+    <SpectralYaml />
+
+    Create a `.spectral.yml` ruleset in your repo. [Then run the `lint` command](https://docs.stoplight.io/docs/spectral/ZG9jOjI1MTg1-spectral-cli) with the `--ruleset` flag:
+    ```bash
+    spectral lint openapi.yml --ruleset=".spectral.yml"
+    ```
+  </Tab>
+
+</Tabs>

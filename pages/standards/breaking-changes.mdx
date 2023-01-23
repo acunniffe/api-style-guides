@@ -1,0 +1,91 @@
+import BreakingChanges from '../../standards/breaking-changes';
+import { Toggle, AlwaysAdded, TextInput } from '../../components';
+
+# Breaking Changes
+Breaking your API consumers is one of the worst things an API team can do. It is also completely preventable. Defining a breaking change is difficult for many engineers -- it is not always obvious that changing the data model in a subtle way will break consumers. This is a great place to add automation, and help developers understand the impact of their changes.
+
+<Toggle name="Prevent Breaking Changes" standard={BreakingChanges} />
+
+**`exclude_operations_with_extension`** (optional): Sometimes you do not want breaking change checks to run.
+- If you are working design-first the API will change a lot as you iterate on the design, failing work in progress does not make sense. Other teams o
+- If you have a `draft` maturity stage for new API operations where stability is not promised to consumers.
+
+In either case -- being able to say "skip these operations" is a useful affordance that supports a lot of real-world workflows.
+
+If you set `exclude_operations_with_extension: "x-draft"`, than every API operation marked with that extension are skipped:
+
+<TextInput standard={BreakingChanges} attribute="exclude_operations_with_extension" name="Exclude operations with extension" />
+
+```yaml
+paths:
+  /example:
+    get:  ## breaking changes allowed here
+     summary: Get examples
+     x-draft: true
+    post:  ## breaking changes not allowed here
+     summary: Post examples
+```
+
+## What breaking changes are checked?
+
+### Request Parameters
+
+- Prevent adding a required Query Parameter
+> only applies to existing operations, new operations can have required query parameters
+
+- Prevent changing an optional Query Parameter to required
+> only applies to existing operations, new operations can have required query parameters
+
+
+- Prevent adding a required Header Parameter
+> only applies to existing operations, new operations can have required query parameters
+
+- Prevent changing an optional Header Parameter to required
+> only applies to existing operations, new operations can have required header parameters
+
+
+- Prevent adding a required Cookie Parameter
+> only applies to existing operations, new operations can have required query parameters
+
+- Prevent changing an optional Cookie Parameter to required
+> only applies to existing operations, new operations can have required cookie parameters
+
+- Prevent restricting the options for an enum Parameter
+> applies to parameters with enum schemas. Removing an option that was supported previously is a breaking change
+
+- Prevent changing the type of Parameter
+> applies to parameters with schemas. Incompatible type changes are a breaking change
+
+
+### Operations
+
+- Prevent removing an Operation
+> applies to every operation
+
+
+- Prevent removing a documented Response Status Code
+> applies to every operation
+
+
+### Request Body Properties
+
+- Prevent making an optional Property required
+> applies to existing properties in existing operations. Request Properties in new operations can be made required
+
+- Prevent adding a required Property
+> applies to existing operations. Adding required properties is a breaking change. Request Properties in new operations can be made required
+
+- Prevent changing the type of Property
+> Incompatible type changes are a breaking change
+
+### Response Body Properties
+
+- Prevent making a required Property optional
+> applies to existing properties in existing operations. Response Properties in new operations can be made optional
+
+- Prevent removing a required Property
+> applies to existing operations. Removing required response properties is a breaking change.
+
+- Prevent changing the type of Property
+> Incompatible type changes are a breaking change
+

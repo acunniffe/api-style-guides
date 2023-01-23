@@ -1,0 +1,42 @@
+import UrlStyleGuide, { SpectralUrlStyleGuides } from '../../standards/url-style-guides';
+import { AlwaysAdded, Toggle, BooleanInput } from '../../components/index';
+import ReactMarkdown from 'react-markdown'
+import {Pre} from 'nextra/components'
+
+# Url Style Guide
+
+Your API consumers will notice one thing about your API before anything else: the URL paths. Do they make sense? Are they predictable? Consistent? This rules in this Style Guide make sense for most Restful APIs. You turn configure the rule here.
+
+<Toggle name="Url Style Guide" standard={UrlStyleGuide} description="the best practices for REST-ful API Paths" />
+
+### Should existing Paths be exempted?
+
+When creating a style guide for existing APIs, we have to remember that some of our existing/legacy paths will not meet the new standards. We do not want developers to go change to make breaking changes to our production API just to make the URL paths follow new rules. That's why this rule can be to all of your API Operations `Always` or only to new ones `Additions`. If you are applying this standard to an existing API `Additions` is recommended:
+
+
+<AlwaysAdded attribute="applies" standard={UrlStyleGuide} part="operations" />
+
+## Choose styles
+
+export const Styles = () => {
+  return <div>{Object.entries(SpectralUrlStyleGuides.rules).map(([key, rule]) => {
+
+      return <div key={key}>
+        <BooleanInput standard={UrlStyleGuide} attribute={key} name={`Enable: ${key}`}>
+          <ReactMarkdown components={{
+            pre: (code) => {
+              return <Pre lang="yaml" >
+                {code.children}
+              </Pre>
+            }
+          }}>
+            {rule.description}
+          </ReactMarkdown>
+        </BooleanInput>
+      </div>
+
+  })}</div>
+}
+
+<Styles />
+

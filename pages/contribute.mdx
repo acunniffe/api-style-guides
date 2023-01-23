@@ -1,0 +1,117 @@
+
+## Sharing your Style Guides
+
+Have you written any Spectral or Optic style guides that you would like to share with the community? You can list them on this site's homepage and give your users the option to configure the style guides in the browser.
+
+Style Guides that are worth sharing:
+
+- Common patterns (JSON API, pagination styles)
+- Best practices (descriptions, security, examples, use of OpenAPI)
+- Common API Standards (ie Restful paths, proper status codes for each method, etc)
+- Versioning policies / deprecation / sunsetting
+- Already Open Source, we'll only accept contributions that are under permissive licenses such as (MIT, Apache, etc.)
+
+Style Guides that might not be worth sharing:
+- Very specific rules that are only relevant to your team
+- "Monolithic" style guides. We prefer that you break these into their component parts so they can be remixed to meet a team's needs.
+
+---
+
+### Contributing to the repository
+
+What you'll need to know: basic Typescript, Markdown, and a bit about Spectral/Optic
+
+1. Clone Repo `https://github.com/acunniffe/api-style-guides`
+2. Run `yarn install`
+3. Run `yarn run add-standard name-of-standard` where `name-of-standard` is a slug i.e. `no-breaking-changes`
+4. Run `yarn dev` to start the app
+
+The `add-standard` command creates these files:
+- `pages/standards/your-standard.mdx` - the markdown documentation for your standard
+- `standards/your-standard.ts` - the plugin used to include your standard in `.spectral.yml` and/or `optic.dev.yml` files this site generates
+
+
+Let's start with the plugin `your-standard.ts`. The plugin handles user inputs (the settings they configure), and patches `optic.dev.yml` and `.spectral.yml` config files based on those settings. Each plugin implements the following interface:
+
+```typescript
+export interface StandardDefinition<Config> { // Config = options your plugin supports, default to {} if no settings can be configured
+  defaultConfiguration: Config; // the default config
+  githubAuthor: string; // your github username
+  isConfigValid: (config: Config) => true | Errors; // validate the config
+  toRulesetPatches: ConfigToRulesetPatches<Config>; // patch OpenAPI
+  generateSpectralRuleset?: SpectralRulesGenerator<Config>; // (optional) generate a custom spectral ruleset based on config
+}
+```
+
+All the important action takes place in `toRulesetPatches`, this takes your config and outputs patches to `optic.dev.yml` and `.spectral.yml`
+
+You can patch by directly mutating the object (it's a copy so you can't mess anything up). Remember that your plugin is running after the plugins before it and before the plugins after it. You should not assign values, you should `push` and set keys:
+
+```typescript
+patch: (spectralYml) => {
+  spectralYml.extends.push(...)
+  spectralYml.rules.push(...)
+
+  return {updated: spectralYml}
+}
+```
+
+You can also return JSON patches if you prefer
+
+```typescript
+patch: (spectralYml) => {
+  return {patches: [{op: 'add', path: '/rules', value: ...}]}
+}
+```
+
+
+### (optional) Host a Spectral Config
+If your plugin generates custom Spectral rules based on user config, it can be helpful to store that somewhere and include a link to your ruleset in `extends: []`. If you implement the `generateSpectralRuleset` method in the plugin, you will be able to generate custom spectral rulesets which become content addressable automatically i.e.: `https://apistyleguides.dev/api/url-style-guides/feae9a2`.
+
+```typescript
+generateSpectralRuleset: (config) => {
+  // generate the ruleset
+  return rulesetDefinition;
+}
+```
+When we generate the final Spectral config the content addressable config will be included in the `extends`
+```yaml
+extends:
+  - https://apistyleguides.dev/api/url-style-guides/feae9a2
+```
+
+---
+
+## Writing Configurable Documentation
+This website lets user set `Config` right in the documentation. That lets you explain the standard, the config options the user has, and help them understand which settings fit their needs.
+
+Import these React Components -- because these are `.mdx` files you can use them inline with your Markdown to make config/docs interactive:
+
+```typescript
+import { Toggle, BooleanInput, AlwaysAdded, TextInput, SelectInput } from '../../components';
+```
+
+#### Toggle turns on/off rulesets
+```typescript
+<Toggle name="Enforce Consistent Naming" standard={Naming} />
+```
+
+#### SelectInput sets one of your config attributes to an enum
+```typescript
+<SelectInput name="Response Headers" attribute="responseHeaders" standard={Naming} options={CasingOptionsSelect} />
+```
+
+#### TextInput sets one of your config attributes to a string value
+```typescript
+<TextInput standard={BreakingChanges} attribute="exclude_operations_with_extension" name="Exclude operations with extension" />
+```
+
+#### BooleanInput is a checkbox that sets one of your config attributes to a boolean
+```typescript
+<BooleanInput standard={UrlStyleGuide} attribute={key} name={`Enable: ${key}`}>
+```
+
+---
+
+## Opening a PR / asking for help
+This just launched in January 2023 and is being worked on by the [Optic](https://useoptic.com) team and some members of the Spectral community. If you are having trouble please open a Draft PR on GitHub with whatever you've done so far, and ask for help! We'll make sure any issues you hit get fixed and these docs get improved based on your questions.

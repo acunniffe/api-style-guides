@@ -1,0 +1,36 @@
+.counter {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 2px 6px;
+  margin: 12px 0 0;
+}
+
+.download {
+  border-radius: 3px;
+  background-color: black;
+  color: white;
+  padding: 5px 9px;
+  font-size: 14px;
+  font-weight: 600;
+
+  animation-name: grow;
+  animation-duration: .3s;
+  animation-iteration-count: 1;
+  animation-timing-function: linear;
+}
+
+.download:hover {
+  background-color: #313030;
+}
+
+@keyframes grow {
+  0% {
+    transform:scale(1);
+  }
+  80% {
+    transform:scale(1.07);
+  }
+  100% {
+    transform:scale(1);
+  }
+}
