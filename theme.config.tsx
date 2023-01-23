@@ -22,7 +22,7 @@ const config: DocsThemeConfig = {
   // chat: {
   //   link: 'https://discord.com',
   // },
-  docsRepositoryBase: 'https://github.com/acunniffe/api-style-guides',
+  docsRepositoryBase: 'https://github.com/acunniffe/api-style-guides/tree/main',
   footer: {
     text: 'API Style Guides',
   },
