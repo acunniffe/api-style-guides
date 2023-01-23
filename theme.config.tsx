@@ -29,6 +29,11 @@ const config: DocsThemeConfig = {
   navbar: {
     extraContent: <DownloadButton />,
   },
+  useNextSeoProps() {
+    return {
+      titleTemplate: '%s – API Style Guides'
+    }
+  },
 };
 
 export default config;
