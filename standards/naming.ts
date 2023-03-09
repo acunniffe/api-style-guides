@@ -44,7 +44,7 @@ const Naming: StandardDefinition<Config> = {
         optic: {
           canPatch: true,
           patch: (opticYml) => {
-            if (opticYml.rulesets['naming']) {
+            if (opticYml.ruleset.some((i) => i.hasOwnProperty('naming'))) {
               return {
                 errors: [
                   'Naming changes already in optic yml from another style guide',
@@ -52,9 +52,12 @@ const Naming: StandardDefinition<Config> = {
               };
             }
 
-            opticYml.rulesets['naming'] = config;
-
-            console.log(opticYml)
+            opticYml.ruleset = [
+              ...(opticYml.ruleset || []),
+              {
+                naming: config,
+              },
+            ];
 
             return { updated: opticYml };
           },

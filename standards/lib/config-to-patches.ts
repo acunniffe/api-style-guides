@@ -4,7 +4,7 @@ import * as jsonPatch from 'fast-json-patch';
 import { PersistedSpectralYaml } from './persist-spectral-yaml';
 
 export const defaultOpticYml: OpticYml = Object.freeze({
-  rulesets: {},
+  ruleset: [],
 });
 
 export const defaultSpectralYml: RulesetDefinition = Object.freeze({

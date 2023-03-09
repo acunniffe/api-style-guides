@@ -84,20 +84,27 @@ const UrlStyleGuide: StandardDefinition<Config> = {
           canPatch: true,
           patch: (opticYml) => {
             const applies = config.applies ?? 'always';
-            if (
-              'spectral' in opticYml.rulesets &&
-              applies in opticYml.rulesets.spectral
-            ) {
-              opticYml.rulesets.spectral[applies].push(
+            const existingSpectral = opticYml.ruleset.find((i) =>
+              i.hasOwnProperty('spectral')
+            );
+            if (existingSpectral && applies in existingSpectral) {
+              existingSpectral.spectral[applies].push(
                 generatedSpectralRuleset.url
               );
-            } else if (!('spectral' in opticYml.rulesets)) {
-              opticYml.rulesets.spectral = {
-                added:
-                  applies === 'added' ? [generatedSpectralRuleset.url] : [],
-                always:
-                  applies === 'always' ? [generatedSpectralRuleset.url] : [],
-              };
+            } else if (!existingSpectral) {
+              opticYml.ruleset = [
+                ...opticYml.ruleset,
+                {
+                  spectral: {
+                    added:
+                      applies === 'added' ? [generatedSpectralRuleset.url] : [],
+                    always:
+                      applies === 'always'
+                        ? [generatedSpectralRuleset.url]
+                        : [],
+                  },
+                },
+              ];
             }
 
             return { updated: opticYml };

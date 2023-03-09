@@ -36,7 +36,7 @@ export type Patch<T> =
   | { patch: Operation[] };
 
 export type OpticYml = {
-  rulesets: { [key: string]: object };
+  ruleset: { [key: string]: object }[];
 };
 
 type SpectralRulesGenerator<Config> = (
